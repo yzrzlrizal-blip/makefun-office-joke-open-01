@@ -37,8 +37,12 @@ def main() -> int:
         return 1
     destination = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
     destination.mkdir(parents=True, exist_ok=True)
-    (destination / "entry.txt").write_text(joke, encoding="utf-8")
-    print(f"wrote {len(joke)} characters to {destination / 'entry.txt'}")
+    target = destination / "entry.txt"
+    target.write_text(joke, encoding="utf-8")
+    if target.read_text(encoding="utf-8") != joke:
+        print("verification failed: entry.txt differs", file=sys.stderr)
+        return 1
+    print(f"wrote {len(joke)} characters to {target}")
     return 0
 
 
